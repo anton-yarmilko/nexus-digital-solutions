@@ -8,7 +8,7 @@
 - Desktop viewport: 1440 × 900 CSS px; full-page implementation content 1440 × 3416 CSS px.
 - Mobile viewport: 390 × 850 CSS px; full-page implementation content 390 × 4544 CSS px.
 - Browser capture density: 2 device pixels per CSS pixel; both columns were normalized to the same 390 CSS px width for the mobile comparison.
-- State: default desktop, default mobile, mobile menu open, contact validation error/success, and both `?cases=0` layouts.
+- State: default desktop, default mobile, mobile menu open, contact validation errors, contact delivery states, and both `?cases=0` layouts.
 
 ## Findings and history
 
@@ -30,21 +30,17 @@
 - Spacing and layout rhythm: section boundaries, 1280 px desktop shell, 362 px mobile shell, card heights, contact composition, and footer dimensions match the source.
 - Colors and tokens: `#F7F7F7`, `#0C0C0C`, `#FF5F25`, `#A6A6A6`, borders, and dot texture match the Figma values.
 - Image quality and assets: original Figma raster content, logo, avatars, case imagery, thumbnails, icons, and decorative marks are reused as extracted source assets. No placeholders remain.
-- Copy and content: visible Figma copy is preserved. Placeholder external destinations open honest information dialogs rather than broken links.
+- Copy and content: visible Figma copy is preserved. Supplied production email and phone details replace the sample contact data; unverified social destinations were removed instead of publishing broken links.
 
 ## Interaction and technical checks
 
 - Mobile menu opens, closes, follows the 390 × 448 menu state, closes on Escape, and closes after navigation.
 - Required form fields report inline errors and move focus to the first invalid field.
-- Valid input produces a truthful local-preview status without transmitting data.
+- Valid input is sent to a same-origin edge endpoint. The endpoint independently validates the payload, applies size and per-IP rate limits, rejects honeypot spam, forwards accepted requests to the configured inbox, and handles provider failures without losing the direct email fallback.
 - `?cases=0` removes the cases section without breaking the remaining layout.
 - Main navigation, section links, skip link, dialogs, hover, focus, and reduced-motion states were checked.
 - Browser accessibility tree contains headings, landmarks, labels, image alternatives, and dialog semantics.
-- No JavaScript error appeared during the browser interaction pass.
-
-## Follow-up polish
-
-- P3: connect the contact form and replace sample contact details once the real endpoint and verified company data are supplied.
+- Security headers, `robots.txt`, `sitemap.xml`, canonical metadata, client/server validation, provider failure handling, and SPA fallback behavior have automated coverage.
+- No JavaScript errors or warnings appeared during the browser interaction pass.
 
 final result: passed
-

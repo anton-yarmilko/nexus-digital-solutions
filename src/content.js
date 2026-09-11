@@ -47,15 +47,9 @@ export const projects = [
 ];
 
 export const information = {
-  Blog: "There are no published articles in this preview yet.",
-  LinkedIn:
-    "A verified LinkedIn profile has not been provided for this preview.",
-  Upwork: "A verified Upwork profile has not been provided for this preview.",
-  Clutch: "A verified Clutch profile has not been provided for this preview.",
+  Blog: "Articles and project insights are coming soon.",
   "Privacy Policy":
-    "This preview does not send your form data to a server or save it in your browser. A production privacy policy has not been provided.",
+    "We use the name, email address, and message you submit only to review your inquiry and reply to you. Form submissions are delivered by FormSubmit and may be retained by that provider according to its privacy terms. Contact taboopip@gmail.com to request deletion.",
   "Terms of Service":
-    "This is a design preview. No services can be purchased here, and production terms have not been provided.",
-  "Contact details":
-    "The address, phone number, and email shown in the design are sample content. Use the form to try the preview; no message will be sent.",
+    "Submitting an inquiry does not create a contract or guarantee availability. Project scope, price, timing, and service terms are agreed separately in writing.",
 };

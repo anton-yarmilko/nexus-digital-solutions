@@ -16,6 +16,89 @@ test("serves existing static assets without a fallback", async () => {
 
   assert.equal(response.status, 200);
   assert.deepEqual(calls, ["/assets/app.js"]);
+  assert.equal(response.headers.get("x-content-type-options"), "nosniff");
+  assert.match(response.headers.get("content-security-policy"), /frame-ancestors 'none'/);
+});
+
+test("validates and forwards a contact request", async () => {
+  let forwarded;
+  const response = await worker.fetch(
+    new Request("https://example.test/api/contact", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        name: "Anton",
+        email: "anton@example.com",
+        message: "Please tell me about a new website.",
+        company: "",
+      }),
+    }),
+    {
+      CONTACT_FETCH: async (url, options) => {
+        forwarded = { url, payload: JSON.parse(options.body) };
+        return Response.json({ success: true });
+      },
+    },
+  );
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { success: true, message: "Message sent." });
+  assert.equal(forwarded.url, "https://formsubmit.co/ajax/taboopip@gmail.com");
+  assert.equal(forwarded.payload._replyto, "anton@example.com");
+  assert.equal(forwarded.payload._url, "https://example.test");
+});
+
+test("rejects invalid contact data before delivery", async () => {
+  let forwards = 0;
+  const response = await worker.fetch(
+    new Request("https://example.test/api/contact", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ name: "", email: "bad", message: "short" }),
+    }),
+    { CONTACT_FETCH: async () => { forwards += 1; } },
+  );
+
+  assert.equal(response.status, 400);
+  assert.equal(forwards, 0);
+});
+
+test("silently accepts honeypot spam without forwarding it", async () => {
+  let forwards = 0;
+  const response = await worker.fetch(
+    new Request("https://example.test/api/contact", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        name: "Bot",
+        email: "bot@example.com",
+        message: "Automated marketing message",
+        company: "https://spam.example",
+      }),
+    }),
+    { CONTACT_FETCH: async () => { forwards += 1; } },
+  );
+
+  assert.equal(response.status, 200);
+  assert.equal(forwards, 0);
+});
+
+test("returns a useful error when delivery is unavailable", async () => {
+  const response = await worker.fetch(
+    new Request("https://example.test/api/contact", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        name: "Anton",
+        email: "anton@example.com",
+        message: "This message should be valid.",
+      }),
+    }),
+    { CONTACT_FETCH: async () => new Response("bad gateway", { status: 503 }) },
+  );
+
+  assert.equal(response.status, 502);
+  assert.match((await response.json()).message, /taboopip@gmail.com/);
 });
 
 test("falls back to index.html for an unknown app route", async () => {

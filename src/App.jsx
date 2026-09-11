@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 import { benefits, information, navigation, projects } from "./content";
-import { validateContact } from "./contact";
+import { submitContact, validateContact } from "./contact";
 
 const asset = (name) => `/assets/${name}.svg`;
 function Art({ name, className = "", alt = "", ...props }) {
@@ -59,19 +59,49 @@ function SectionTitle({ children, number, centered = false }) {
   );
 }
 function ContactForm() {
-  const [values, setValues] = useState({ name: "", email: "", message: "" });
+  const [values, setValues] = useState({
+    name: "",
+    email: "",
+    message: "",
+    company: "",
+  });
   const [errors, setErrors] = useState({});
-  const [checked, setChecked] = useState(false);
+  const [status, setStatus] = useState({ state: "idle", message: "" });
   const fields = useRef({});
-  function submit(event) {
+  async function submit(event) {
     event.preventDefault();
     const next = validateContact(values);
     setErrors(next);
-    setChecked(!Object.keys(next).length);
     if (Object.keys(next).length) fields.current[Object.keys(next)[0]]?.focus();
+    if (Object.keys(next).length) return;
+    setStatus({ state: "sending", message: "Sending your message…" });
+    try {
+      await submitContact(values);
+      setValues({ name: "", email: "", message: "", company: "" });
+      setStatus({
+        state: "success",
+        message: "Thanks — your message has been sent. We'll get back to you soon.",
+      });
+    } catch (error) {
+      setStatus({
+        state: "error",
+        message: error.message || "We couldn't send your message. Please try again.",
+      });
+    }
   }
   return (
     <form className="contact-form" noValidate onSubmit={submit}>
+      <div className="honeypot" aria-hidden="true">
+        <label htmlFor="contact-company">Company website</label>
+        <input
+          id="contact-company"
+          name="company"
+          tabIndex="-1"
+          autoComplete="off"
+          value={values.company}
+          onChange={(event) => setValues({ ...values, company: event.target.value })}
+        />
+      </div>
       {["name", "email", "message"].map((field) => (
         <div className={`field ${errors[field] ? "invalid" : ""}`} key={field}>
           <label className="sr-only" htmlFor={`contact-${field}`}>
@@ -80,8 +110,29 @@ function ContactForm() {
               : field === "email"
                 ? "Email"
                 : "Message"}
-            {field !== "message" ? " (required)" : ""}
+            {" (required)"}
           </label>
+          {field === "message" ? (
+            <textarea
+              id="contact-message"
+              ref={(el) => {
+                fields.current.message = el;
+              }}
+              name="message"
+              required
+              maxLength="2000"
+              rows="1"
+              placeholder="Message *"
+              value={values.message}
+              aria-invalid={!!errors.message}
+              aria-describedby={errors.message ? "message-error" : undefined}
+              onChange={(event) => {
+                setValues({ ...values, message: event.target.value });
+                setStatus({ state: "idle", message: "" });
+                if (errors.message) setErrors({ ...errors, message: undefined });
+              }}
+            />
+          ) : (
           <input
             id={`contact-${field}`}
             ref={(el) => {
@@ -92,24 +143,25 @@ function ContactForm() {
             autoComplete={
               field === "name" ? "name" : field === "email" ? "email" : "off"
             }
-            required={field !== "message"}
-            maxLength={field === "message" ? 2000 : 254}
+            required
+            maxLength={field === "name" ? 120 : 254}
             placeholder={
               field === "name"
                 ? "Name *"
                 : field === "email"
                   ? "Email *"
-                  : "Message"
+                  : "Message *"
             }
             value={values[field]}
             aria-invalid={!!errors[field]}
             aria-describedby={errors[field] ? `${field}-error` : undefined}
             onChange={(event) => {
               setValues({ ...values, [field]: event.target.value });
-              setChecked(false);
+              setStatus({ state: "idle", message: "" });
               if (errors[field]) setErrors({ ...errors, [field]: undefined });
             }}
           />
+          )}
           {errors[field] && (
             <p className="field-error" id={`${field}-error`}>
               {errors[field]}
@@ -117,14 +169,15 @@ function ContactForm() {
           )}
         </div>
       ))}
-      <button className="talk" type="submit">
-        Let’s Talk
+      <button className="talk" type="submit" disabled={status.state === "sending"}>
+        {status.state === "sending" ? "Sending…" : "Let’s Talk"}
         <span aria-hidden="true" />
       </button>
-      <p className="form-status" role="status">
-        {checked
-          ? "Your details look good. This is a preview — no message has been sent."
-          : ""}
+      <p className="form-privacy">
+        By sending this form, you agree that we may use your details to reply to your inquiry.
+      </p>
+      <p className={`form-status ${status.state}`} role="status" aria-live="polite">
+        {status.message}
       </p>
     </form>
   );
@@ -355,29 +408,16 @@ export function App() {
               <a href="#home" aria-label="NEXUS home">
                 <Art name="logo" className="footer-logo" alt="NEXUS." />
               </a>
-              <p className="address">Address: 123 Main St, City, Country</p>
+              <p className="address">Remote studio · Worldwide</p>
               <div className="contact-details">
-                <button onClick={() => setInfo("Contact details")}>
-                  Phone: +123456789
-                </button>
-                <button
-                  className="email"
-                  onClick={() => setInfo("Contact details")}
-                >
-                  Email: info@digitalagency.com
-                </button>
+                <a href="tel:+88888888">Phone: +88888888</a>
+                <a className="email" href="mailto:taboopip@gmail.com">
+                  Email: taboopip@gmail.com
+                </a>
               </div>
             </div>
             <div className="footer-navigation">
               <Nav onInfo={setInfo} />
-              <nav aria-label="Social links">
-                {["LinkedIn", "Upwork", "Clutch"].map((name, i) => (
-                  <button key={name} onClick={() => setInfo(name)}>
-                    {name}
-                    <sup>({String(i + 1).padStart(2, "0")})</sup>
-                  </button>
-                ))}
-              </nav>
             </div>
           </div>
           <div className="footer-bar">
@@ -411,6 +451,13 @@ export function App() {
           </button>
           <h2 id="dialog-title">{info}</h2>
           <p>{information[info]}</p>
+          {info === "Privacy Policy" && (
+            <p className="dialog-link">
+              <a href="https://formsubmit.co/privacy" target="_blank" rel="noreferrer">
+                Read FormSubmit’s privacy terms
+              </a>
+            </p>
+          )}
           <button className="talk" onClick={() => setInfo(null)}>
             Got it
             <span aria-hidden="true" />

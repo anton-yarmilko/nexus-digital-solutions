@@ -457,7 +457,8 @@ section {
   margin-bottom: 14px;
   position: relative;
 }
-.field input {
+.field input,
+.field textarea {
   display: block;
   width: 100%;
   border: 0;
@@ -469,12 +470,16 @@ section {
   color: #0c0c0c;
   font-size: 20px;
   line-height: 26px;
+  font-family: inherit;
+  resize: vertical;
 }
-.field input::placeholder {
+.field input::placeholder,
+.field textarea::placeholder {
   color: #0c0c0c;
   opacity: 1;
 }
-.field input:focus {
+.field input:focus,
+.field textarea:focus {
   border-bottom-color: var(--orange);
 }
 .field-error {
@@ -484,11 +489,30 @@ section {
   color: #b3330b;
   margin-top: 5px;
 }
-.invalid input {
+.invalid input,
+.invalid textarea {
   border-color: #b3330b;
 }
 .contact-form .talk {
   margin-top: 6px;
+}
+.contact-form .talk:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+.honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.form-privacy {
+  max-width: 520px;
+  margin-top: 12px;
+  color: #626262;
+  font-size: 12px;
+  line-height: 16px;
 }
 .form-status {
   font-size: 14px;
@@ -499,6 +523,12 @@ section {
 }
 .form-status:empty {
   display: none;
+}
+.form-status.success {
+  color: #23603b;
+}
+.form-status.error {
+  color: #b3330b;
 }
 .footer-main {
   height: 401px;
@@ -522,7 +552,7 @@ section {
   flex-direction: column;
   gap: 14px;
 }
-.contact-details button {
+.contact-details a {
   font-size: 20px;
   line-height: 26px;
 }
@@ -607,6 +637,14 @@ dialog::backdrop {
   color: #626262;
   margin: 20px 0 28px;
   letter-spacing: -0.03em;
+}
+.dialog-content .dialog-link {
+  margin-top: -16px;
+}
+.dialog-link a {
+  color: #0c0c0c;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .dialog-close {
   position: absolute;
@@ -900,7 +938,7 @@ dialog::backdrop {
     margin-top: 20px;
     gap: 12px;
   }
-  .contact-details button {
+  .contact-details a {
     font-size: 20px;
     line-height: 26px;
   }
