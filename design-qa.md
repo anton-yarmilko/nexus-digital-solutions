@@ -36,7 +36,7 @@
 
 - Mobile menu opens, closes, follows the 390 × 448 menu state, closes on Escape, and closes after navigation.
 - Required form fields report inline errors and move focus to the first invalid field.
-- Valid input is sent to a same-origin edge endpoint. The endpoint independently validates the payload, applies size and per-IP rate limits, rejects honeypot spam, forwards accepted requests to the configured inbox, and handles provider failures without losing the direct email fallback.
+- Valid input is normalized, checked, filtered through a honeypot, and sent through FormSubmit's supported cross-origin AJAX endpoint. Provider failures and the one-time activation state produce a truthful error without losing the direct email fallback.
 - `?cases=0` removes the cases section without breaking the remaining layout.
 - Main navigation, section links, skip link, dialogs, hover, focus, and reduced-motion states were checked.
 - Browser accessibility tree contains headings, landmarks, labels, image alternatives, and dialog semantics.

@@ -10,15 +10,30 @@ export function validateContact(values) {
   return errors;
 }
 
-export async function submitContact(values, signal) {
-  const response = await fetch("/api/contact", {
+export async function submitContact(values, signal, transport = fetch) {
+  const response = await transport("https://formsubmit.co/ajax/taboopip@gmail.com", {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify(values),
+    body: JSON.stringify({
+      name: values.name.trim(),
+      email: values.email.trim(),
+      message: values.message.trim(),
+      _replyto: values.email.trim(),
+      _subject: "New NEXUS website inquiry",
+      _template: "table",
+      _url: typeof window === "undefined" ? "https://example.test" : window.location.origin,
+      _honey: values.company,
+    }),
     signal,
   });
   const data = await response.json().catch(() => ({}));
-  if (!response.ok || !data.success) {
+  const providerRejected = data.success === false || data.success === "false";
+  if (providerRejected && /activat/i.test(data.message || "")) {
+    throw new Error(
+      "Contact delivery is awaiting one-time activation. Email us at taboopip@gmail.com.",
+    );
+  }
+  if (!response.ok || providerRejected || !data.success) {
     throw new Error(data.message || "We couldn't send your message. Please try again.");
   }
   return data;
