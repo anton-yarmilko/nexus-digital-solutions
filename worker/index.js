@@ -90,7 +90,12 @@ async function handleContact(request, env) {
   try {
     upstream = await transport(`https://formsubmit.co/ajax/${CONTACT_EMAIL}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Origin: new URL(request.url).origin,
+        Referer: `${new URL(request.url).origin}/`,
+      },
       body: JSON.stringify({
         name: result.value.name,
         email: result.value.email,
@@ -110,7 +115,20 @@ async function handleContact(request, env) {
   }
 
   const data = await upstream.json().catch(() => ({}));
-  if (!upstream.ok || data.success === false) {
+  const providerRejected = data.success === false || data.success === "false";
+  const activationRequired =
+    providerRejected && /activat/i.test(typeof data.message === "string" ? data.message : "");
+  if (activationRequired) {
+    return json(
+      {
+        success: false,
+        code: "activation_required",
+        message: `Contact delivery is awaiting one-time activation. Email us at ${CONTACT_EMAIL}.`,
+      },
+      503,
+    );
+  }
+  if (!upstream.ok || providerRejected) {
     return json(
       { success: false, message: `We couldn't deliver your message. Email us at ${CONTACT_EMAIL}.` },
       502,

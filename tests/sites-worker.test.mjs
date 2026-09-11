@@ -35,7 +35,7 @@ test("validates and forwards a contact request", async () => {
     }),
     {
       CONTACT_FETCH: async (url, options) => {
-        forwarded = { url, payload: JSON.parse(options.body) };
+        forwarded = { url, headers: options.headers, payload: JSON.parse(options.body) };
         return Response.json({ success: true });
       },
     },
@@ -44,8 +44,31 @@ test("validates and forwards a contact request", async () => {
   assert.equal(response.status, 200);
   assert.deepEqual(await response.json(), { success: true, message: "Message sent." });
   assert.equal(forwarded.url, "https://formsubmit.co/ajax/taboopip@gmail.com");
+  assert.equal(forwarded.headers.Origin, "https://example.test");
+  assert.equal(forwarded.headers.Referer, "https://example.test/");
   assert.equal(forwarded.payload._replyto, "anton@example.com");
   assert.equal(forwarded.payload._url, "https://example.test");
+});
+
+test("reports the provider's one-time activation requirement", async () => {
+  const response = await worker.fetch(
+    new Request("https://example.test/api/contact", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        name: "Anton",
+        email: "anton@example.com",
+        message: "This message should be valid.",
+      }),
+    }),
+    {
+      CONTACT_FETCH: async () =>
+        Response.json({ success: "false", message: "This form needs Activation." }),
+    },
+  );
+
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).code, "activation_required");
 });
 
 test("rejects invalid contact data before delivery", async () => {
