@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://nexus-digital-solutions-anton.rikishini.chatgpt.site/sitemap.xml
+Sitemap: https://nexus-anton.pages.dev/sitemap.xml
