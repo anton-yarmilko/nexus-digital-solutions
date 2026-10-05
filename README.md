@@ -4,6 +4,8 @@ A non-commercial portfolio project implementing the supplied [Figma design](http
 
 **Live demo:** <https://nexus-digital-solutions-anton.rikishini.chatgpt.site/>
 
+The interface identifies this as Anton Yarmilko's independent, non-commercial portfolio implementation. Design-reference images are not client-work claims; unsupported customer counts, ratings and the placeholder phone number have been removed. Contact messages go to the maintainer through the existing FormSubmit flow.
+
 ## Highlights
 
 - Responsive desktop and mobile layouts based on the original design.

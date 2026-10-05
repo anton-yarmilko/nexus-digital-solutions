@@ -221,6 +221,12 @@ section {
   align-items: center;
   color: #626262;
 }
+.portfolio-notice {
+  padding-block: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #4d4d4d;
+}
 .trust p {
   font-size: 10px;
   line-height: 13px;

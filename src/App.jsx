@@ -241,6 +241,7 @@ export function App() {
           {menuOpen ? <FiX /> : <FiMenu />}
         </button>
       </header>
+      <p className="portfolio-notice shell">Independent non-commercial portfolio demo by Anton Yarmilko. Not a commercial agency; design imagery is illustrative.</p>
       <div id="mobile-menu" className="mobile-menu shell" hidden={!menuOpen}>
         <Nav onNavigate={closeMenu} onInfo={setInfo} />
         <Talk onClick={closeMenu} />
@@ -261,8 +262,8 @@ export function App() {
             />
             <div className="hero-description">
               <p>
-                We create stunning websites, platforms, and mobile apps tailored
-                <br className="desktop-break" /> to your business needs.
+                A responsive React/Vite implementation of a supplied Figma design.
+                <br className="desktop-break" /> Explore the interface or contact its maintainer.
               </p>
               <div className="hero-cta">
                 <Talk />
@@ -275,30 +276,17 @@ export function App() {
                 />
               </div>
             </div>
-            <div className="trust">
+            <div className="trust" aria-label="Portfolio implementation">
               <div>
-                <p>Scaled 200+ Brands</p>
-                <div className="rating" aria-label="Rated 4.9 out of 5">
-                  <span aria-hidden="true">
-                    {[0, 1, 2, 3, 4].map((i) => (
-                      <Art name="star" key={i} />
-                    ))}
-                  </span>
-                  <span>4.9</span>
-                </div>
+                <p>React · Vite · Responsive UI</p>
+                <p>Independent portfolio implementation</p>
               </div>
-              <Art
-                name="avatars"
-                width="74"
-                height="32"
-                alt="Client portraits"
-              />
             </div>
           </div>
         </section>
         <section id="about" className="benefits-section dotted section-border">
           <div className="shell benefits-inner">
-            <SectionTitle number="02">Why Choose Us</SectionTitle>
+            <SectionTitle number="02">Implementation Highlights</SectionTitle>
             <div className="benefit-grid">
               {benefits.map((item) => (
                 <article className="benefit-card" key={item.title}>
@@ -334,8 +322,8 @@ export function App() {
                     Branding
                   </span>
                   <div>
-                    <h3>Experienced Team</h3>
-                    <p>{benefits[0].description}</p>
+                    <h3>Illustrative Design Reference</h3>
+                    <p>Supplied design imagery shown as part of this interface implementation, not a claim of client work.</p>
                   </div>
                 </div>
                 <img
@@ -373,7 +361,7 @@ export function App() {
           <div className="shell contact-inner">
             <div className="contact-grid">
               <aside className="contact-promo">
-                <h2>Join the Businesses Leading Their Industry</h2>
+                <h2>Explore This Portfolio Implementation</h2>
                 <Talk
                   className="talk-peach"
                   href="#contact-name"
@@ -390,9 +378,9 @@ export function App() {
               </aside>
               <div className="contact-content">
                 <Art name="corner" className="corner" />
-                <h2 id="contact-title">Ready to Start Your Project?</h2>
+                <h2 id="contact-title">Contact the Portfolio Maintainer</h2>
                 <p className="contact-intro">
-                  Fill in the form below and let's create something amazing
+                  Send a message about this implementation or a potential project
                   together.
                 </p>
                 <ContactForm />
@@ -408,9 +396,8 @@ export function App() {
               <a href="#home" aria-label="NEXUS home">
                 <Art name="logo" className="footer-logo" alt="NEXUS." />
               </a>
-              <p className="address">Remote studio · Worldwide</p>
+              <p className="address">Anton Yarmilko · Independent portfolio</p>
               <div className="contact-details">
-                <a href="tel:+88888888">Phone: +88888888</a>
                 <a className="email" href="mailto:taboopip@gmail.com">
                   Email: taboopip@gmail.com
                 </a>
@@ -421,7 +408,7 @@ export function App() {
             </div>
           </div>
           <div className="footer-bar">
-            <p>NEXUS® ©2026 All rights reserved</p>
+            <p>NEXUS design implementation · Non-commercial portfolio · 2026</p>
             <nav aria-label="Legal information">
               {["Privacy Policy", "Terms of Service"].map((name) => (
                 <button onClick={() => setInfo(name)} key={name}>

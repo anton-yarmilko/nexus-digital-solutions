@@ -9,27 +9,27 @@ export const navigation = [
 export const benefits = [
   {
     icon: "users",
-    title: "Experienced Team",
+    title: "Responsive Implementation",
     description:
-      "Our senior engineers and designers bring decades of combined expertise in web, platform, and mobile development.",
+      "A React/Vite portfolio implementation with layouts adapted for desktop and mobile screens.",
   },
   {
     icon: "codepen",
-    title: "Custom Solutions",
+    title: "Source-Based Design",
     description:
-      "No templates, no shortcuts. Every project is architected from scratch to fit your exact business requirements.",
+      "An independent implementation of a supplied Figma design, with the design source credited in the repository.",
   },
   {
     icon: "monitor",
-    title: "Cutting-Edge Technology",
+    title: "Interactive UI",
     description:
-      "We work with the latest frameworks and cloud infrastructure to ensure your product scales and performs.",
+      "Explore section navigation, the mobile menu, information dialogs, and a validated contact form.",
   },
   {
     icon: "hash",
-    title: "Global Reach",
+    title: "Tested Behaviors",
     description:
-      "We've partnered with clients across Europe, North America, Asia, and the Middle East — time zones never stop us.",
+      "Automated checks cover contact validation and the static-site packaging baseline. This is not a commercial studio service.",
   },
 ];
 
@@ -47,9 +47,9 @@ export const projects = [
 ];
 
 export const information = {
-  Blog: "Articles and project insights are coming soon.",
+  Blog: "This dialog demonstrates an interface interaction. No blog publishing service is implemented in this portfolio project.",
   "Privacy Policy":
     "We use the name, email address, and message you submit only to review your inquiry and reply to you. Form submissions are delivered by FormSubmit and may be retained by that provider according to its privacy terms. Contact taboopip@gmail.com to request deletion.",
   "Terms of Service":
-    "Submitting an inquiry does not create a contract or guarantee availability. Project scope, price, timing, and service terms are agreed separately in writing.",
+    "This is an independent, non-commercial portfolio implementation of a supplied design, not a commercial agency or a claim of affiliation. Example project images are design references, not verified client work. Sending a message contacts the portfolio maintainer and does not create a contract or guarantee availability.",
 };
